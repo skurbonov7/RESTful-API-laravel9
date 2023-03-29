@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DeskStoreRequest;
 use App\Http\Resources\DeskResource;
 use App\Models\Desk;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Response;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DeskController extends Controller
 {
@@ -15,7 +16,7 @@ class DeskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index() : AnonymousResourceCollection
     {
         return DeskResource::collection(Desk::all());
     }
@@ -31,8 +32,7 @@ class DeskController extends Controller
         $created_desk = Desk::create([
             'name' => $request->name,
         ]);
-
-        return new DeskResource($created_desk); 
+        return response(['created_desk' => $created_desk], Response::HTTP_CREATED);
     }
 
     /**
@@ -41,7 +41,7 @@ class DeskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Desk $desk)
+    public function show(Desk $desk): DeskResource
     {
         return new DeskResource($desk);
     }
@@ -55,9 +55,9 @@ class DeskController extends Controller
      */
     public function update(DeskStoreRequest $request, Desk $desk)
     {
-        $desk->update($request->validated());
-        
-        return new DeskResource($desk);
+        $update_desk = $desk->update($request->validated());
+
+        return response(['update_desk' => $update_desk], Response::HTTP_OK);
     }
 
     /**
