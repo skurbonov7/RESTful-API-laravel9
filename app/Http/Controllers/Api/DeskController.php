@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DeskStoreRequest;
 use App\Http\Resources\DeskResource;
 use App\Models\Desk;
 use Illuminate\Http\Request;
@@ -16,7 +17,6 @@ class DeskController extends Controller
      */
     public function index()
     {
-        //return Desk::pluck();
         return DeskResource::collection(Desk::with('lists')->get());
     }
 
@@ -28,9 +28,18 @@ class DeskController extends Controller
      */
     public function store(Request $request)
     {
-        $created_desk = Desk::create($request->all());
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+        ]);
+    
+        $desk = Desk::create([
+            'name' => $validatedData['name'],
+        ]);
+    
+        return response()->json(['message' => 'Post created successfully!', 'post' => $desk], 201);
 
-        return  new DeskResource($created_desk);
+        /* $created_desk = Desk::create($request->validated());
+        return new DeskResource($created_desk); */
     }
 
     /**
