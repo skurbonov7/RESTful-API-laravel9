@@ -30,7 +30,7 @@ class DeskController extends Controller
     {
         $created_desk = Desk::create($request->validated());
 
-        return new DeskResource($created_desk);
+        return new DeskResource($created_desk); 
     }
 
     /**
@@ -41,8 +41,6 @@ class DeskController extends Controller
      */
     public function show(Desk $desk)
     {
-        // return Desk::where('id', $id)->get();
-        // return Desk::findOrFail($desk->id);
         return new DeskResource(Desk::with('lists')->findOrFail($desk->id));
     }
 
