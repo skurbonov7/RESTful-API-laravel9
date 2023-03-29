@@ -28,7 +28,10 @@ class DeskController extends Controller
      */
     public function store(DeskStoreRequest $request)
     {
-        $created_desk = Desk::create($request->validated());
+        $created_desk = Desk::create([
+            'name' => $request->name,
+        ]);
+
         return new DeskResource($created_desk); 
     }
 
